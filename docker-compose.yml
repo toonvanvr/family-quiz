@@ -1,0 +1,68 @@
+volumes:
+  app-node-modules:
+  db-data:
+
+services:
+
+  app:
+    # T3 Stack web app
+    # ----------------
+    # port: 3000
+    # ----------------
+    image: node:22
+    working_dir: /app
+    volumes:
+      - ./app:/app
+      - app-node-modules:/app/node_modules
+    command: npm run dev:docker
+    environment:
+      DATABASE_URL: "postgresql://docker:local@db:5432/family-quiz"
+    ports:
+      - ${FQ_APP_HOST_PORT:-3000}:3000
+    depends_on:
+      - db
+
+  db-ui:
+    # Adminer 
+    # ----------------
+    # DB Management UI
+    # ----------------
+    # port: 3001
+    # ----------------
+    image: adminer
+    restart: always
+    ports:
+      - ${FQ_ADMINER_HOST_PORT:-3001}:8080
+    depends_on:
+      - db
+    
+  db:
+    # Postgres 17
+    # ---------------------
+    # Application database
+    # ---------------------
+    # user: docker
+    # pass: local
+    # port: 5433
+    # ---------------------
+    image: postgres:17
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: local
+    ports:
+      - ${FQ_POSTGRES_HOST_PORT:-5433}:5433
+
+  devcontainer:
+    # Development container
+    # ---------------------
+    build:
+      context: .
+      dockerfile: ./docker/devcontainer/devcontainer.Dockerfile
+    working_dir: /app
+    volumes:
+      - ./app:/app
+      - app-node-modules:/app/node_modules
+    environment:
+      DATABASE_URL: "postgresql://docker:local@db:5432/family-quiz"
