@@ -22,7 +22,7 @@ services:
       - ${APP_WEB_UI_HOST_PORT:-3000}:${APP_WEB_UI_PORT:-${APP_WEB_UI_HOST_PORT:-3000}}
     command: npm run dev:docker
     depends_on:
-      - db
+      - web-api
 
   web-api:
     # Family Quiz Web API
@@ -30,20 +30,19 @@ services:
     # port: 4000
     # -------------------
     image: node:${NODE_VERSION:-22}
-    working_dir: /work/web/ui
+    working_dir: /work/web/api
     restart: unless-stopped
     volumes:
-      - ./web/ui:/work/web/ui
-      - web-ui-node-modules:/work/web/ui/node_modules
+      - ./web/ui:/work/web/api
+      - web-api-node-modules:/work/web/api/node_modules
     environment:
+      APP_WEB_API_PORT: ${APP_WEB_API_PORT:-${APP_WEB_API_HOST_PORT:-4000}}
       APP_DB_URL: "postgresql://${APP_DB_USER:-docker}:${APP_DB_PASS:-local}@db:5432/${APP_DB_NAME:-family-quiz}"
     ports:
-      - ${APP_WEB_API_HOST_PORT:-3000}:${APP_WEB_API_PORT:-${APP_WEB_API_HOST_PORT:-3000}}
+      - ${APP_WEB_API_HOST_PORT:-4000}:${APP_WEB_API_PORT:-${APP_WEB_API_HOST_PORT:-4000}}
     command: npm run dev:docker
     depends_on:
       - db
-
-
 
   db-ui:
     # Drizzle Studio
@@ -94,6 +93,7 @@ services:
     build:
       context: .
       dockerfile: ./docker/devcontainer/devcontainer.Dockerfile
+    user: node:node
     working_dir: /work
     volumes:
       - .:/work
