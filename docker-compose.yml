@@ -20,7 +20,7 @@ services:
       APP_API_URL: localhost:${APP_API_HOST_PORT:-${APP_API_PORT:-4000}}
     ports:
       - ${APP_WEB_UI_HOST_PORT:-3000}:${APP_WEB_UI_PORT:-${APP_WEB_UI_HOST_PORT:-3000}}
-    command: npm run dev:docker
+    command: npm i && npm run dev:docker
     depends_on:
       - web-api
 
@@ -33,14 +33,14 @@ services:
     working_dir: /work/web/api
     restart: unless-stopped
     volumes:
-      - ./web/ui:/work/web/api
+      - ./web/api:/work/web/api
       - web-api-node-modules:/work/web/api/node_modules
     environment:
       APP_WEB_API_PORT: ${APP_WEB_API_PORT:-${APP_WEB_API_HOST_PORT:-4000}}
       APP_DB_URL: "postgresql://${APP_DB_USER:-docker}:${APP_DB_PASS:-local}@db:5432/${APP_DB_NAME:-family-quiz}"
     ports:
       - ${APP_WEB_API_HOST_PORT:-4000}:${APP_WEB_API_PORT:-${APP_WEB_API_HOST_PORT:-4000}}
-    command: npm run dev:docker
+    command: npm i && npm run dev:docker
     depends_on:
       - db
 
@@ -56,10 +56,10 @@ services:
     working_dir: /work/web/api
     restart: unless-stopped
     volumes:
-      - ./web/ui:/work/web/api
+      - ./web/api:/work/web/api
       - web-api-node-modules:/work/web/api/node_modules
     environment:
-      DATABASE_URL: "postgresql://${APP_DB_USER:-docker}:${APP_DB_PASS:-local}@db:5432/${APP_DB_NAME:-family-quiz}"
+      APP_DB_URL: "postgresql://${APP_DB_USER:-docker}:${APP_DB_PASS:-local}@db:5432/${APP_DB_NAME:-family-quiz}"
     ports:
       - ${APP_DB_UI_HOST_PORT:-4983}:${APP_DB_UI_PORT:-${APP_DB_UI_HOST_PORT:-4983}}
     command: npm run db:studio -- --host 0.0.0.0 --port ${APP_DB_UI_PORT:-${APP_DB_UI_HOST_PORT:-4983}}
