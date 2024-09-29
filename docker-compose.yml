@@ -5,23 +5,23 @@ volumes:
 services:
 
   app:
-    # T3 Stack web app
-    # ----------------
+    # Family Quiz Web UI
+    # ------------------
     # port: 3000
-    # ----------------
-    # image: node:22
-    # working_dir: /work/app
-    # restart: unless-stopped
-    # volumes:
-    #   - ./app:/work/app
-    #   - app-node-modules:/work/app/node_modules
-    # command: npm run dev:docker
-    # environment:
-    #   DATABASE_URL: "postgresql://docker:local@db:5432/family-quiz"
-    # ports:
-    #   - ${FQ_APP_HOST_PORT:-3000}:3000
-    # depends_on:
-    #   - db
+    # ------------------
+    image: node:22
+    working_dir: /work/app
+    restart: unless-stopped
+    volumes:
+      - ./app:/work/app
+      - app-node-modules:/work/app/node_modules
+    environment:
+      DATABASE_URL: "postgresql://docker:local@db:5432/family-quiz"
+    ports:
+      - ${FQ_APP_HOST_PORT:-3000}:3000
+    command: npm run dev:docker
+    depends_on:
+      - db
 
   db-ui:
     # Drizzle Studio
