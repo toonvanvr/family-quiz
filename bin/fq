@@ -3,6 +3,9 @@ case "$1" in
   "up")
     docker compose up --build "${@:2}"
     ;;
+  "down")
+    docker compose down
+    ;;
   "cli")
     docker compose run --rm devcontainer bash -c "cd app && bash"
     ;;
