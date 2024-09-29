@@ -14,7 +14,7 @@ case "$1" in
     docker compose run --rm --user root devcontainer bash
     ;;
   "ng" )
-    docker compose run --rm devcontainer sh -c "cd web/ui && npx ng ${@:2}"
+    docker compose run --rm devcontainer bash -c "cd web/ui && npx ng ${@:2}"
     ;;
   * )
     echo "proj"

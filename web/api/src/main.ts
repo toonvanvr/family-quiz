@@ -7,6 +7,10 @@ async function bootstrap() {
   const { port } = appConfig;
 
   const app = await NestFactory.create(CoreModule);
+  app.enableCors({
+    allowedHeaders: '*',
+    origin: '*',
+  });
   const trpc = app.get(TrpcRouter);
   trpc.applyMiddleware(app);
   await app.listen(port);
