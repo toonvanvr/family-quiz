@@ -6,4 +6,4 @@ import { TrpcModule } from '../../trpc/trpc.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class CoreModule {}

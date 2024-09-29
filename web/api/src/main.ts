@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { appConfig } from './core/constants/app.config';
-import { AppModule } from './core/modules/app.module';
+import { CoreModule } from './core/modules/core.module';
 import { TrpcRouter } from './trpc/routes/trpc.routes';
 
 async function bootstrap() {
   const { port } = appConfig;
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(CoreModule);
   const trpc = app.get(TrpcRouter);
   trpc.applyMiddleware(app);
   await app.listen(port);
