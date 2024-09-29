@@ -20,7 +20,7 @@ services:
       APP_API_URL: localhost:${APP_API_HOST_PORT:-${APP_API_PORT:-4000}}
     ports:
       - ${APP_WEB_UI_HOST_PORT:-3000}:${APP_WEB_UI_PORT:-${APP_WEB_UI_HOST_PORT:-3000}}
-    command: npm i && npm run dev:docker
+    command: /bin/bash -c "npm i && npm run dev:docker"
     depends_on:
       - web-api
 
