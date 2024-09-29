@@ -9,30 +9,39 @@ services:
     # ----------------
     # port: 3000
     # ----------------
+    # image: node:22
+    # working_dir: /work/app
+    # restart: unless-stopped
+    # volumes:
+    #   - ./app:/work/app
+    #   - app-node-modules:/work/app/node_modules
+    # command: npm run dev:docker
+    # environment:
+    #   DATABASE_URL: "postgresql://docker:local@db:5432/family-quiz"
+    # ports:
+    #   - ${FQ_APP_HOST_PORT:-3000}:3000
+    # depends_on:
+    #   - db
+
+  db-ui:
+    # Drizzle Studio
+    # -------------------------
+    # DB Management UI
+    # -------------------------
+    # url: local.drizzle.studio
+    # port: 4983
+    # -------------------------
     image: node:22
-    working_dir: /app
+    working_dir: /work/app
+    restart: unless-stopped
     volumes:
-      - ./app:/app
-      - app-node-modules:/app/node_modules
-    command: npm run dev:docker
+      - ./app:/work/app
+      - app-node-modules:/work/app/node_modules
     environment:
       DATABASE_URL: "postgresql://docker:local@db:5432/family-quiz"
     ports:
-      - ${FQ_APP_HOST_PORT:-3000}:3000
-    depends_on:
-      - db
-
-  db-ui:
-    # Adminer 
-    # ----------------
-    # DB Management UI
-    # ----------------
-    # port: 3001
-    # ----------------
-    image: adminer
-    restart: always
-    ports:
-      - ${FQ_ADMINER_HOST_PORT:-3001}:8080
+      - ${FQ_DB_UI_HOST_PORT:-4983}:${FQ_DB_UI_HOST_PORT:-4983}
+    command: npm run db:studio -- --host 0.0.0.0 --port ${FQ_DB_UI_HOST_PORT:-4983}
     depends_on:
       - db
     
@@ -43,16 +52,19 @@ services:
     # ---------------------
     # user: docker
     # pass: local
-    # port: 5433
+    # port: 5432
     # ---------------------
     image: postgres:17
-    restart: always
+    restart: unless-stopped
     shm_size: 128mb
     environment:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: local
+      POSTGRES_DB: family-quiz
+    volumes:
+      - db-data:/var/lib/postgresql/data
     ports:
-      - ${FQ_POSTGRES_HOST_PORT:-5433}:5433
+      - ${FQ_POSTGRES_HOST_PORT:-5432}:5432
 
   devcontainer:
     # Development container
@@ -60,9 +72,13 @@ services:
     build:
       context: .
       dockerfile: ./docker/devcontainer/devcontainer.Dockerfile
-    working_dir: /app
+    working_dir: /work
     volumes:
-      - ./app:/app
-      - app-node-modules:/app/node_modules
+      - .:/work
+      - app-node-modules:/work/app/node_modules
     environment:
       DATABASE_URL: "postgresql://docker:local@db:5432/family-quiz"
+    profiles:
+      - dev
+    depends_on:
+      - db
