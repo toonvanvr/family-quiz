@@ -1,17 +1,27 @@
 #!/usr/bin/env bash
+
 case "$1" in
-  "up")
+  "up" )
     docker compose up --build "${@:2}"
     ;;
-  "down")
+  "down" )
     docker compose down
     ;;
-  "cli")
-    docker compose run --rm devcontainer bash
+  "ui" | "api" )
+    docker compose run --rm --user root devcontainer sh -c "cd web/$1 && bash -l"
     ;;
-  *)
+  "cli" )
+    docker compose run --rm --user root devcontainer bash
+    ;;
+  "ng" )
+    docker compose run --rm devcontainer sh -c "cd web/ui && npx ng ${@:2}"
+    ;;
+  * )
     echo "proj"
     echo "  up   run the project"
-    echo "  cli  run a command in the cli"  
+    echo "  cli  open shell in devcontainer"
+    echo "  ui   cli @ web/ui"
+    echo "  api  cli @ web/api"
+    echo "  ng   ng @ web-ui"
     ;;
 esac
