@@ -1,4 +1,5 @@
 volumes:
+  npm-cache:
   web-ui-node-modules:
   web-api-node-modules:
   db-data:
@@ -17,6 +18,7 @@ services:
       - ./web/ui:/work/web/ui
       - ./web/api:/work/web/api
       - web-ui-node-modules:/work/web/ui/node_modules
+      - npm-cache:/root/.npm
     environment:
       APP_API_URL: localhost:${APP_API_HOST_PORT:-${APP_API_PORT:-4000}}
     ports:
@@ -36,6 +38,7 @@ services:
     volumes:
       - ./web/api:/work/web/api
       - web-api-node-modules:/work/web/api/node_modules
+      - npm-cache:/root/.npm
     environment:
       APP_WEB_API_PORT: ${APP_WEB_API_PORT:-${APP_WEB_API_HOST_PORT:-4000}}
       APP_DB_URL: "postgresql://${APP_DB_USER:-docker}:${APP_DB_PASS:-local}@db:5432/${APP_DB_NAME:-family-quiz}"
@@ -59,6 +62,7 @@ services:
     volumes:
       - ./web/api:/work/web/api
       - web-api-node-modules:/work/web/api/node_modules
+      - npm-cache:/root/.npm
     environment:
       APP_DB_URL: "postgresql://${APP_DB_USER:-docker}:${APP_DB_PASS:-local}@db:5432/${APP_DB_NAME:-family-quiz}"
     ports:
@@ -99,6 +103,7 @@ services:
     volumes:
       - .:/work
       - web-ui-node-modules:/work/web/ui/node_modules
+      - npm-cache:/root/.npm
     environment:
       DATABASE_URL: "postgresql://${APP_DB_USER:-docker}:${APP_DB_PASS:-local}@db:5432/${APP_DB_NAME:-family-quiz}"
     tty: true
