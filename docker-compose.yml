@@ -40,7 +40,7 @@ services:
       APP_DB_URL: "postgresql://${APP_DB_USER:-docker}:${APP_DB_PASS:-local}@db:5432/${APP_DB_NAME:-family-quiz}"
     ports:
       - ${APP_WEB_API_HOST_PORT:-4000}:${APP_WEB_API_PORT:-${APP_WEB_API_HOST_PORT:-4000}}
-    command: npm i && npm run dev:docker
+    command: /bin/bash -c "npm i && npm run dev:docker"
     depends_on:
       - db
 
